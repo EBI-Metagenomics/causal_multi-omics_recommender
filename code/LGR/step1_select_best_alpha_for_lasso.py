@@ -7,6 +7,10 @@ from  sklearn.metrics import mean_absolute_error, r2_score
 import os
 import sys
 
+"""
+This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
+"""
+
 ROOT =  "../.." # sys.argv[1] # ".." 
 OUTPUT_ID = "1" # sys.argv[2] # "1" 
 ALT_PHENO =  0 # sys.argv[3] # 0 if no, 1 if yes
