@@ -43,3 +43,5 @@ This step does repeated holdout sampling i.e. for 10000 iterations, randomly sel
 Out of step 3 we get validation accuracies for linear regression run on 10 features at a time. Here we iterate over those scores and collect an average score associated with each gene. The resulting file from this can then be used to rank genes in terms of robustness.
 
     python step4_aggregate_MAEs.py {Path/to/file} {Output index (int)}
+
+This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
