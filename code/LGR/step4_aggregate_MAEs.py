@@ -7,12 +7,19 @@ import os
 This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 """
 
-ROOT =  "../.." # sys.argv[1] # ".." 
-OUTPUT_ID = "1" # sys.argv[2] # "1"
-ALT_PHENO = 0 
+ROOT = "../.." #sys.argv[1] # ".." 
+OUTPUT_ID = "1" #sys.argv[2] # "1"
+ALT_PHENO = "4" #sys.argv[3] 
 
-data = pd.read_csv(ROOT + os.sep + "data/processed/all_chromosomes.csv", index_col=0)
 df = pd.read_csv(ROOT + os.sep + f"data/result_unsorted_{ALT_PHENO}_{OUTPUT_ID}.csv", index_col=0)
+
+if ALT_PHENO == 0:
+    data = pd.read_csv(ROOT + os.sep + "data/processed/all_chromosomes.csv", index_col=0)
+    
+# elif ALT_PHENO == "3":
+#     XY = pd.read_csv("../../data/magnet_dataset_7_april.csv", index_col=0)
+#     y = XY["phenotype"]
+#     X = XY.drop("phenotype", axis=1)
 
 def extract_list(input_string):
     extracted_strings = re.findall(r"'(.*?)'", input_string)
