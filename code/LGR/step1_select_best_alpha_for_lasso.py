@@ -7,74 +7,18 @@ from  sklearn.metrics import mean_absolute_error, r2_score
 import os
 import sys
 
-"""
-This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
-"""
+ROOT = sys.argv[1]
+XY_FILE = sys.argv[2]
+PHENOTYPE_COL = sys.argv[3]
+OUTPUT_ID = sys.argv[4]
 
-ROOT = "../.." #sys.argv[1] # ".." 
-OUTPUT_ID = "1" #sys.argv[2] # "1" 
-ALT_PHENO = "4" # sys.argv[3] # 0 if no, 1 if yes
-NUM_ITERATIONS = 20 # make this smaller for quick debugging
-NUM_ALPHAS = 100
+NUM_ITERATIONS = 50
 
-directory_names = [ROOT + os.sep + f"figures"]
-for directory_name in directory_names:
-    # Check if the directory exists
-    if not os.path.exists(directory_name):
-        # Create the directory if it doesn't exist
-        os.makedirs(directory_name)
+XY = pd.read_csv( ROOT + os.sep + "data" + os.sep + XY_FILE, index_col=0)
+y = XY[PHENOTYPE_COL]
+X = XY.drop(PHENOTYPE_COL, axis=1)
 
-if ALT_PHENO == 0:
-    # Pivot the DataFrame
-    df = pd.read_csv(ROOT + os.sep + "data/processed/all_chromosomes.csv", index_col=0)
-    pivoted_df = df.pivot_table(index='sample.id', columns='gene', values=["gene.expression"],  aggfunc='mean')
-    X = pivoted_df
-
-    # Pivot the DataFrame
-    pivoted_df = df.pivot_table(index='sample.id', values=["gutted.weight.kg"],  aggfunc='mean')
-    y = pivoted_df
-
-elif ALT_PHENO == 1:
-    df = pd.read_csv(ROOT + os.sep + "data/processed/all_chromosomes.csv", index_col=0)
-    pivoted_df = df.pivot_table(index='sample.id', columns='gene', values=["gene.expression"],  aggfunc='mean')
-    X = pivoted_df
-    metabolome_pheno = pd.read_csv(ROOT + os.sep + "data/processed/metabolome_pca.csv", index_col=0)
-    y = metabolome_pheno["principal component 1"]
-    X.columns = X.columns.droplevel(0)
-    XY = pd.merge(left=X, right=y, left_on=X.index, right_on=y.index)
-    XY.index = XY["key_0"]
-    X = XY.drop(["principal component 1", "key_0"], axis=1)
-    y = XY["principal component 1"]
-
-elif ALT_PHENO == 2:
-    df = pd.read_csv(ROOT + os.sep + "data/processed/all_chromosomes.csv", index_col=0)
-    pivoted_df = df.pivot_table(index='sample.id', columns='gene', values=["gene.expression"],  aggfunc='mean')
-    X = pivoted_df
-    metadata = pd.read_csv("../../data/raw/HoloFish_FishVariables_20221116.csv")
-    y = metadata[["Sample.ID", "Tapeworm.index"]]
-    y.index = y["Sample.ID"]
-    y.drop("Sample.ID", axis=1, inplace=True)
-    X.columns = X.columns.droplevel(0)
-    XY = pd.merge(left=X, right=y, left_on=X.index, right_on=y.index)
-    XY.index = XY["key_0"]
-    X = XY.drop(["Tapeworm.index", "key_0"], axis=1)
-    y = XY["Tapeworm.index"]
-elif ALT_PHENO == "3":
-    #XY = pd.read_csv("../../data/magnet_dataset_7_april.csv", index_col=0)
-    XY = pd.read_csv("../../data/magnet_dataset_21_apr_v7.csv", index_col=0)
-    y = XY["phenotype"]
-    X = XY.drop("phenotype", axis=1)
-elif ALT_PHENO == "4":
-    XY = pd.read_csv("../../data/scaled_salmon_holofood_dataset.csv", index_col=0)
-    print(XY)
-    y = XY["Salmon gutted weight---SAMPLE"]
-    print(y)
-    X = XY.drop("Salmon gutted weight---SAMPLE", axis=1)
-    print(X)
-else:
-    raise NotImplementedError
-
-alphas = np.linspace(0.01, 1, num=NUM_ALPHAS) # TODO would be better to do logspace or something that explores lower numbers more
+alphas = np.linspace(0.01, 1, num=100)
 
 rsquared_list = []
 mae_list = []
@@ -103,12 +47,10 @@ alpha_mae_df["alphas"] = alphas
 alpha_mae_df["mae_list"] = mae_list
 alpha_mae_df["rsquared"] = rsquared_list
 alpha_mae_df["all_maes"] = all_cv_maes_for_alpha
-alpha_mae_df.to_csv(ROOT + os.sep + f"data/alpha_mae_altpheno_{ALT_PHENO}_df_{OUTPUT_ID}.csv")
+alpha_mae_df.to_csv(ROOT + os.sep + f"data/alpha_mae_df_{OUTPUT_ID}.csv")
 
 # Uncomment to plot
-plt.scatter(x=alphas, y= mae_list)
-plt.xlabel("Alpha")
-plt.ylabel("MAE")
-plt.savefig(ROOT + os.sep + f"figures/alpha_vs_mae_altpheno_{ALT_PHENO}_{OUTPUT_ID}.png")
-
-print("Finished step 1")
+# plt.scatter(x=alphas, y= mae_list)
+# plt.xlabel("Alpha")
+# plt.ylabel("MAE")
+# plt.savefig(ROOT + os.sep + f"figures/alpha_vs_mae_{OUTPUT_ID}.png")

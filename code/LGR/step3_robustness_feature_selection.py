@@ -11,64 +11,20 @@ import os
 This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 """
 
-ROOT =  "../.." #sys.argv[1] # ".." 
-OUTPUT_ID = "1" #sys.argv[2] # "1" 
-ALT_PHENO =  "4" #sys.argv[3] # 0 if no, 1 if yes
-NUM_ITERATIONS = 5000 # 10000
-NUM_HOLDOUT_SAMPLES = 20
-n_features_for_regression = 20
+ROOT = sys.argv[1]
+XY_FILE = sys.argv[2]
+PHENOTYPE_COL = sys.argv[3]
+OUTPUT_ID = sys.argv[4]
 
-best_training_features = pd.read_csv(ROOT + os.sep + f"data/best_features_altpheno_{ALT_PHENO}_{OUTPUT_ID}.csv", index_col=0)
+NUM_ITERATIONS = 1000 # 10000
+NUM_HOLDOUT_SAMPLES = 10
+n_features_for_regression = 10
 
+best_training_features = pd.read_csv(ROOT + os.sep + f"data/best_features_{OUTPUT_ID}.csv", index_col=0)
 
-
-if ALT_PHENO == 0:
-    df = pd.read_csv(ROOT + os.sep + "data/processed/all_chromosomes.csv", index_col=0)
-    # Pivot the DataFrame
-    pivoted_df = df.pivot_table(index='sample.id', columns='gene', values=["gene.expression"],  aggfunc='mean')
-    X = pivoted_df
-
-    # Pivot the DataFrame
-    pivoted_df = df.pivot_table(index='sample.id', values=["gutted.weight.kg"],  aggfunc='mean')
-    y = pivoted_df
-
-elif ALT_PHENO == 1:
-    df = pd.read_csv(ROOT + os.sep + "data/processed/all_chromosomes.csv", index_col=0)
-    # Pivot the DataFrame
-    pivoted_df = df.pivot_table(index='sample.id', columns='gene', values=["gene.expression"],  aggfunc='mean')
-    X = pivoted_df
-    metabolome_pheno = pd.read_csv(ROOT + os.sep + "data/processed/metabolome_pca.csv", index_col=0)
-    y = metabolome_pheno["principal component 1"]
-    X.columns = X.columns.droplevel(0)
-    XY = pd.merge(left=X, right=y, left_on=X.index, right_on=y.index)
-    XY.index = XY["key_0"]
-    X = XY.drop(["principal component 1", "key_0"], axis=1)
-    y = XY["principal component 1"]
-elif ALT_PHENO == 2:
-    df = pd.read_csv(ROOT + os.sep + "data/processed/all_chromosomes.csv", index_col=0)
-    # Pivot the DataFrame
-    pivoted_df = df.pivot_table(index='sample.id', columns='gene', values=["gene.expression"],  aggfunc='mean')
-    X = pivoted_df
-    metadata = pd.read_csv("../../data/raw/HoloFish_FishVariables_20221116.csv")
-    y = metadata[["Sample.ID", "Tapeworm.index"]]
-    y.index = y["Sample.ID"]
-    y.drop("Sample.ID", axis=1, inplace=True)
-    X.columns = X.columns.droplevel(0)
-    XY = pd.merge(left=X, right=y, left_on=X.index, right_on=y.index)
-    XY.index = XY["key_0"]
-    X = XY.drop(["Tapeworm.index", "key_0"], axis=1)
-    y = XY["Tapeworm.index"]
-elif ALT_PHENO == "3":
-    XY = pd.read_csv("../../data/magnet_dataset_21_apr_v7.csv", index_col=0)
-    y = XY["phenotype"]
-    X = XY.drop("phenotype", axis=1)
-elif ALT_PHENO == "4":
-    XY = pd.read_csv("../../data/second_salmon_dataset.csv", index_col=0)
-    print(XY)
-    y = XY["Salmon gutted weight---SAMPLE"]
-    print(y)
-    X = XY.drop("Salmon gutted weight---SAMPLE", axis=1)
-    print(X)
+XY = pd.read_csv( ROOT + os.sep + "data" + os.sep + XY_FILE, index_col=0)
+y = XY[PHENOTYPE_COL]
+X = XY.drop(PHENOTYPE_COL, axis=1)
 
 mae_list = []
 feature_combination_list = []
@@ -80,9 +36,6 @@ best_gene_set = None
 # print("Start search")
 for j in range(NUM_ITERATIONS):
     choose_n = best_training_features.sample(n=n_features_for_regression).values.flatten()
-    # if ALT_PHENO != 2:
-    #     X_only_n = X["gene.expression"][choose_n]
-    # else:
     X_only_n = X[choose_n]
     holdout_sample_mae_list = []
     update = 0
@@ -115,7 +68,7 @@ result_df = pd.DataFrame()
 result_df["MAE"] = mae_list
 result_df["Features"] = feature_combination_list
 result_df["Update"] = update_here
-result_df.to_csv(ROOT + os.sep + f"data/result_unsorted_{ALT_PHENO}_{OUTPUT_ID}.csv")
+result_df.to_csv(ROOT + os.sep + f"data/result_unsorted_{OUTPUT_ID}.csv")
 result_df.sort_values(by="MAE", inplace=True, ascending=False)
 result_df.reset_index(drop=True, inplace=True)
-result_df.to_csv(ROOT + os.sep + f"data/result_sorted_{ALT_PHENO}_{OUTPUT_ID}.csv")
+result_df.to_csv(ROOT + os.sep + f"data/result_sorted_{OUTPUT_ID}.csv")
