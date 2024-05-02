@@ -15,9 +15,9 @@ XY_FILE = sys.argv[2]
 PHENOTYPE_COL = sys.argv[3]
 OUTPUT_ID = sys.argv[4]
 
-NUM_ITERATIONS = 30
+NUM_ITERATIONS = 50
 
-alpha_mae = pd.read_csv(ROOT + os.sep + f"data/alpha_mae_altpheno_df_{OUTPUT_ID}.csv")
+alpha_mae = pd.read_csv(ROOT + os.sep + f"data/alpha_mae_df_{OUTPUT_ID}.csv")
 
 error_low = []
 error_high = []

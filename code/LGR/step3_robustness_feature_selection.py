@@ -16,8 +16,8 @@ XY_FILE = sys.argv[2]
 PHENOTYPE_COL = sys.argv[3]
 OUTPUT_ID = sys.argv[4]
 
-NUM_ITERATIONS = 1000 # 10000
-NUM_HOLDOUT_SAMPLES = 10
+NUM_ITERATIONS = 10000 # 10000
+NUM_HOLDOUT_SAMPLES = 50
 n_features_for_regression = 10
 
 best_training_features = pd.read_csv(ROOT + os.sep + f"data/best_features_{OUTPUT_ID}.csv", index_col=0)
