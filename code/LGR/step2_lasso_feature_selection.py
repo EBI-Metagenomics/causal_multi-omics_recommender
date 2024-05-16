@@ -5,19 +5,22 @@ import numpy as np
 import sys
 import os
 import ast
+import time
+start_time = time.time()
 
 """
 This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 """
 
-ROOT = sys.argv[1]
-XY_FILE = sys.argv[2]
-PHENOTYPE_COL = sys.argv[3]
-OUTPUT_ID = sys.argv[4]
+ROOT = "../.." #sys.argv[1]
+XY_FILE = "magnet_dataset_x_positions_1.csv" # sys.argv[2]
+PHENOTYPE_COL = "phenotype" #"gutted.weight.kg" #sys.argv[3]
+OUTPUT_ID = "1" # sys.argv[4]
+SUBFOLDER = "magnets_20k_features_1000_samples"#"transcriptome_with_random" #sys.argv[5]
 
 NUM_ITERATIONS = 50
 
-alpha_mae = pd.read_csv(ROOT + os.sep + f"data/alpha_mae_df_{OUTPUT_ID}.csv")
+alpha_mae = pd.read_csv(ROOT + os.sep + f"data/{SUBFOLDER}/alpha_mae_df_{OUTPUT_ID}.csv")
 
 error_low = []
 error_high = []
@@ -41,7 +44,7 @@ chosen_alpha_df = chosen_alpha_df[chosen_alpha_df["alphas"] > best_alpha]
 chosen_alpha_df.sort_values(by="mae_list", inplace=True)
 chosen_alpha = chosen_alpha_df["alphas"].iloc[0]
 
-XY = pd.read_csv( ROOT + os.sep + "data" + os.sep + XY_FILE, index_col=0)
+XY = pd.read_csv( ROOT + os.sep + "data"+ os.sep + SUBFOLDER + os.sep + XY_FILE, index_col=0)
 y = XY[PHENOTYPE_COL]
 X = XY.drop(PHENOTYPE_COL, axis=1)
 
@@ -70,6 +73,10 @@ for i in range(NUM_ITERATIONS):
 
 new_best_features = pd.DataFrame()
 new_best_features["features"] = list(nonzero_coefs)
-new_best_features.to_csv(ROOT + os.sep + f"data/best_features_{OUTPUT_ID}.csv")
+new_best_features.to_csv(ROOT + os.sep + f"data/{SUBFOLDER}/best_features_{OUTPUT_ID}.csv")
 
 print(f"Finished step 2. {len(nonzero_coefs)} features remain.")
+
+end_time = time.time()
+elapsed_time = np.round((end_time - start_time)/60, 2)
+print(f"Program ran in: {elapsed_time} minutes")

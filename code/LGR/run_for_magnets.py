@@ -1,16 +1,15 @@
 import subprocess
+import sys
 
-# List of commands with their arguments
+data_id = sys.argv[1]
+
 scripts_with_args = [
-    ("step1_select_best_alpha_for_lasso.py", ["../..", "magnet_dataset_x_positions.csv", "phenotype", "magnet"]),
-    ("step2_lasso_feature_selection.py", ["../..", "magnet_dataset_x_positions.csv", "phenotype", "magnet"]),
-    ("step3_robustness_feature_selection.py", ["../..", "magnet_dataset_x_positions.csv", "phenotype", "magnet"]),
-    ("step4_aggregate_MAEs.py", ["../..", "magnet"])
+    ("step1_select_best_alpha_for_lasso.py", ["../..", "magnet_dataset_x_positions.csv", "phenotype", f"_{data_id}", "magnets_20k_10_runs"]),
+    ("step2_lasso_feature_selection.py", ["../..", "magnet_dataset_x_positions.csv", "phenotype", f"_{data_id}", "magnets_20k_10_runs"]),
+    ("step3_robustness_feature_selection.py", ["../..", "magnet_dataset_x_positions.csv", "phenotype", f"_{data_id}", "magnets_20k_10_runs"]),
+    ("step4_aggregate_MAEs.py", ["../..", f"_{data_id}", "magnets_20k_10_runs"])
 
 ]
-
-    # ["step3_robustness_feature_selection.py", "../..", "magnet_dataset_x_positions.csv", "phenotype", "magnet"],
-    # ["step4_aggregate_MAEs.py", "../..", "magnet"]
 
 i = 0
 for script, args in scripts_with_args:

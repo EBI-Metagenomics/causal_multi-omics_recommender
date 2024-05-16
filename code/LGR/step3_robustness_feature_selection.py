@@ -6,23 +6,36 @@ import numpy as np
 from  sklearn.metrics import mean_absolute_error
 import sys
 import os
+import random
+import time
+start_time = time.time()
 
 """
 This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 """
 
-ROOT = sys.argv[1]
-XY_FILE = sys.argv[2]
-PHENOTYPE_COL = sys.argv[3]
-OUTPUT_ID = sys.argv[4]
+ROOT = "../.." #sys.argv[1]
+XY_FILE = "magnet_dataset_x_positions_1.csv" # sys.argv[2]
+PHENOTYPE_COL = "phenotype" #"gutted.weight.kg" #sys.argv[3]
+OUTPUT_ID = "1" # sys.argv[4]
+SUBFOLDER = "magnets_20k_features_1000_samples"#"transcriptome_with_random" #sys.argv[5]
 
 NUM_ITERATIONS = 10000 # 10000
 NUM_HOLDOUT_SAMPLES = 50
 n_features_for_regression = 10
 
-best_training_features = pd.read_csv(ROOT + os.sep + f"data/best_features_{OUTPUT_ID}.csv", index_col=0)
+best_training_features = pd.read_csv(ROOT + os.sep + f"data/{SUBFOLDER}/best_features_{OUTPUT_ID}.csv", index_col=0)
 
-XY = pd.read_csv( ROOT + os.sep + "data" + os.sep + XY_FILE, index_col=0)
+XY = pd.read_csv( ROOT + os.sep + f"data/{SUBFOLDER}" + os.sep + XY_FILE, index_col=0)
+
+# Add random features
+random_strings = [f"Random_{i}" for i in range(20)]
+for random_string in random_strings:
+    random_column = random.choice(XY.columns)
+    shuffled_values = XY[random_column].sample(frac=1).values
+    XY[random_string] = shuffled_values
+
+
 y = XY[PHENOTYPE_COL]
 X = XY.drop(PHENOTYPE_COL, axis=1)
 
@@ -68,7 +81,11 @@ result_df = pd.DataFrame()
 result_df["MAE"] = mae_list
 result_df["Features"] = feature_combination_list
 result_df["Update"] = update_here
-result_df.to_csv(ROOT + os.sep + f"data/result_unsorted_{OUTPUT_ID}.csv")
+result_df.to_csv(ROOT + os.sep + f"data/{SUBFOLDER}/result_unsorted_{OUTPUT_ID}.csv")
 result_df.sort_values(by="MAE", inplace=True, ascending=False)
 result_df.reset_index(drop=True, inplace=True)
-result_df.to_csv(ROOT + os.sep + f"data/result_sorted_{OUTPUT_ID}.csv")
+result_df.to_csv(ROOT + os.sep + f"data/{SUBFOLDER}/result_sorted_{OUTPUT_ID}.csv")
+
+end_time = time.time()
+elapsed_time = np.round((end_time - start_time)/60, 2)
+print(f"Program ran in: {elapsed_time} minutes")

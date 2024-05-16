@@ -6,15 +6,19 @@ import numpy as np
 from  sklearn.metrics import mean_absolute_error, r2_score
 import os
 import sys
+import time
+start_time = time.time()
 
-ROOT = sys.argv[1]
-XY_FILE = sys.argv[2]
-PHENOTYPE_COL = sys.argv[3]
-OUTPUT_ID = sys.argv[4]
+id = sys.argv[1]
+ROOT = "../.." #sys.argv[1]
+XY_FILE = f"magnet_dataset_x_positions_{id}.csv" # sys.argv[2]
+PHENOTYPE_COL = "phenotype" #"gutted.weight.kg" #sys.argv[3]
+OUTPUT_ID = f"{id}" # sys.argv[4]
+SUBFOLDER = "magnets_20k_features_300_samples"#"transcriptome_with_random" #sys.argv[5]
 
 NUM_ITERATIONS = 50
 
-XY = pd.read_csv( ROOT + os.sep + "data" + os.sep + XY_FILE, index_col=0)
+XY = pd.read_csv( ROOT + os.sep + "data" + os.sep + SUBFOLDER + os.sep + XY_FILE, index_col=0)
 y = XY[PHENOTYPE_COL]
 X = XY.drop(PHENOTYPE_COL, axis=1)
 
@@ -47,10 +51,8 @@ alpha_mae_df["alphas"] = alphas
 alpha_mae_df["mae_list"] = mae_list
 alpha_mae_df["rsquared"] = rsquared_list
 alpha_mae_df["all_maes"] = all_cv_maes_for_alpha
-alpha_mae_df.to_csv(ROOT + os.sep + f"data/alpha_mae_df_{OUTPUT_ID}.csv")
+alpha_mae_df.to_csv(ROOT + os.sep + f"data/{SUBFOLDER}/alpha_mae_df_{OUTPUT_ID}.csv")
 
-# Uncomment to plot
-# plt.scatter(x=alphas, y= mae_list)
-# plt.xlabel("Alpha")
-# plt.ylabel("MAE")
-# plt.savefig(ROOT + os.sep + f"figures/alpha_vs_mae_{OUTPUT_ID}.png")
+end_time = time.time()
+elapsed_time = (end_time - start_time)/60
+print(f"Program ran in: {elapsed_time} minutes")
