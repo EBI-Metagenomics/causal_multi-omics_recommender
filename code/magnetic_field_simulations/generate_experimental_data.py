@@ -58,7 +58,7 @@ coll_exp = magpy.Collection(magnets_list, override_parent=True)
 polarisation_levels = [0.5,1,2]
 polarisation_probabilities = [0.6487, 0.3115, 0.0397] # taken from experimental data
 
-NUM_SAMPLES = num_samples
+NUM_SAMPLES = int(num_samples)
 data_df = pd.DataFrame()
 polarisation_df = pd.DataFrame()
 
