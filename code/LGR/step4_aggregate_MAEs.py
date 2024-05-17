@@ -1,24 +1,26 @@
 import pandas as pd
 import re
 import sys
+import numpy as np
 import os
+import time
+start_time = time.time()
 
 """
 This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 """
 
-ROOT =  "../.." # sys.argv[1] # ".." 
-OUTPUT_ID = "1" # sys.argv[2] # "1"
-ALT_PHENO = 0 
+ROOT = "../.." #cd ..ys.argv[1]
+OUTPUT_ID = sys.argv[1]
+SUBFOLDER = "magnets_20k_features_300_samples"#"transcriptome_with_random" #sys.argv[5]
 
-data = pd.read_csv(ROOT + os.sep + "data/processed/all_chromosomes.csv", index_col=0)
-df = pd.read_csv(ROOT + os.sep + f"data/result_unsorted_{ALT_PHENO}_{OUTPUT_ID}.csv", index_col=0)
+df = pd.read_csv(ROOT + os.sep + f"data/{SUBFOLDER}/result_unsorted_{OUTPUT_ID}.csv", index_col=0)
 
 def extract_list(input_string):
     extracted_strings = re.findall(r"'(.*?)'", input_string)
     return extracted_strings
 
-all_genes = pd.read_csv(ROOT + os.sep + f"data/best_features_altpheno_{ALT_PHENO}_{OUTPUT_ID}.csv", index_col=0)
+all_genes = pd.read_csv(ROOT + os.sep + f"data/{SUBFOLDER}/best_features_{OUTPUT_ID}.csv", index_col=0)
 all_genes = list(all_genes["features"].values)
 
 ave_mae_list = []
@@ -44,4 +46,8 @@ for gene in all_genes:
 result_df = pd.DataFrame()
 result_df["Gene"] = covered_genes
 result_df["ave_MAE"] = ave_mae_list
-result_df.to_csv(ROOT + os.sep + f"data/results_ave_mae_{OUTPUT_ID}.csv")
+result_df.to_csv(ROOT + os.sep + f"data/{SUBFOLDER}/results_ave_mae_{OUTPUT_ID}.csv")
+
+end_time = time.time()
+elapsed_time = np.round((end_time - start_time)/60, 2)
+print(f"Program ran in: {elapsed_time} minutes")

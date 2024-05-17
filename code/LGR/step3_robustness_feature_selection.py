@@ -6,47 +6,41 @@ import numpy as np
 from  sklearn.metrics import mean_absolute_error
 import sys
 import os
+import random
+import time
+start_time = time.time()
 
 """
 This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 """
 
-ROOT =  "../.." # sys.argv[1] # ".." 
-OUTPUT_ID = "1" # sys.argv[2] # "1" 
-ALT_PHENO =  0 # sys.argv[3] # 0 if no, 1 if yes
-NUM_ITERATIONS = 300 # 10000
-NUM_HOLDOUT_SAMPLES = 10
-n_features_for_regression = 15
+id = sys.argv[1]
+ROOT = "../.." #sys.argv[1]
+XY_FILE = f"magnet_dataset_x_positions_{id}.csv" # sys.argv[2]
+PHENOTYPE_COL = "phenotype" #"gutted.weight.kg" #sys.argv[3]
+OUTPUT_ID = f"{id}" # sys.argv[4]
+SUBFOLDER = "magnets_20k_features_300_samples"#"transcriptome_with_random" #sys.argv[5]
 
-best_training_features = pd.read_csv(ROOT + os.sep + f"data/best_features_altpheno_{ALT_PHENO}_{OUTPUT_ID}.csv", index_col=0)
-df = pd.read_csv(ROOT + os.sep + "data/processed/all_chromosomes.csv", index_col=0)
+NUM_ITERATIONS = 10000 # 10000
+NUM_HOLDOUT_SAMPLES = 50
+n_features_for_regression = 10
 
-# Pivot the DataFrame
-pivoted_df = df.pivot_table(index='sample.id', columns='gene', values=["gene.expression"],  aggfunc='mean')
-X = pivoted_df
+best_training_features = pd.read_csv(ROOT + os.sep + f"data/{SUBFOLDER}/best_features_{OUTPUT_ID}.csv", index_col=0)
+best_training_features = list(best_training_features["features"].values)
 
-# Pivot the DataFrame
-pivoted_df = df.pivot_table(index='sample.id', values=["gutted.weight.kg"],  aggfunc='mean')
-y = pivoted_df
+XY = pd.read_csv( ROOT + os.sep + f"data/{SUBFOLDER}" + os.sep + XY_FILE, index_col=0)
 
-if ALT_PHENO == 1:
-    metabolome_pheno = pd.read_csv(ROOT + os.sep + "data/processed/metabolome_pca.csv", index_col=0)
-    y = metabolome_pheno["principal component 1"]
-    X.columns = X.columns.droplevel(0)
-    XY = pd.merge(left=X, right=y, left_on=X.index, right_on=y.index)
-    XY.index = XY["key_0"]
-    X = XY.drop(["principal component 1", "key_0"], axis=1)
-    y = XY["principal component 1"]
-elif ALT_PHENO == 2:
-    metadata = pd.read_csv("../../data/raw/HoloFish_FishVariables_20221116.csv")
-    y = metadata[["Sample.ID", "Tapeworm.index"]]
-    y.index = y["Sample.ID"]
-    y.drop("Sample.ID", axis=1, inplace=True)
-    X.columns = X.columns.droplevel(0)
-    XY = pd.merge(left=X, right=y, left_on=X.index, right_on=y.index)
-    XY.index = XY["key_0"]
-    X = XY.drop(["Tapeworm.index", "key_0"], axis=1)
-    y = XY["Tapeworm.index"]
+# Add random features
+random_strings = [f"Random_{i}" for i in range(20)]
+for random_string in random_strings:
+    random_column = random.choice(XY.columns)
+    shuffled_values = XY[random_column].sample(frac=1).values
+    XY[random_string] = shuffled_values
+    best_training_features.append(random_string)
+
+
+y = XY[PHENOTYPE_COL]
+X = XY.drop(PHENOTYPE_COL, axis=1)
 
 mae_list = []
 feature_combination_list = []
@@ -57,11 +51,9 @@ best_gene_set = None
 
 # print("Start search")
 for j in range(NUM_ITERATIONS):
-    choose_n = best_training_features.sample(n=n_features_for_regression).values.flatten()
-    if ALT_PHENO != 2:
-        X_only_n = X["gene.expression"][choose_n]
-    else:
-        X_only_n = X[choose_n]
+    #choose_n = best_training_features.sample(n=n_features_for_regression).values.flatten()
+    choose_n = random.sample(best_training_features, 10)
+    X_only_n = X[choose_n]
     holdout_sample_mae_list = []
     update = 0
     for k in range(NUM_HOLDOUT_SAMPLES):
@@ -93,7 +85,11 @@ result_df = pd.DataFrame()
 result_df["MAE"] = mae_list
 result_df["Features"] = feature_combination_list
 result_df["Update"] = update_here
-result_df.to_csv(ROOT + os.sep + f"data/result_unsorted_{ALT_PHENO}_{OUTPUT_ID}.csv")
+result_df.to_csv(ROOT + os.sep + f"data/{SUBFOLDER}/result_unsorted_{OUTPUT_ID}.csv")
 result_df.sort_values(by="MAE", inplace=True, ascending=False)
 result_df.reset_index(drop=True, inplace=True)
-result_df.to_csv(ROOT + os.sep + f"data/result_sorted_{ALT_PHENO}_{OUTPUT_ID}.csv")
+result_df.to_csv(ROOT + os.sep + f"data/{SUBFOLDER}/result_sorted_{OUTPUT_ID}.csv")
+
+end_time = time.time()
+elapsed_time = np.round((end_time - start_time)/60, 2)
+print(f"Program ran in: {elapsed_time} minutes")
