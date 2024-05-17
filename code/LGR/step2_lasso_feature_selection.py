@@ -12,11 +12,12 @@ start_time = time.time()
 This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 """
 
+id = sys.argv[1]
 ROOT = "../.." #sys.argv[1]
-XY_FILE = "magnet_dataset_x_positions_1.csv" # sys.argv[2]
+XY_FILE = f"magnet_dataset_x_positions_{id}.csv" # sys.argv[2]
 PHENOTYPE_COL = "phenotype" #"gutted.weight.kg" #sys.argv[3]
-OUTPUT_ID = "1" # sys.argv[4]
-SUBFOLDER = "magnets_20k_features_1000_samples"#"transcriptome_with_random" #sys.argv[5]
+OUTPUT_ID = f"{id}" # sys.argv[4]
+SUBFOLDER = "magnets_20k_features_300_samples"#"transcriptome_with_random" #sys.argv[5]
 
 NUM_ITERATIONS = 50
 
