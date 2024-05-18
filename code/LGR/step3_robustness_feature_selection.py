@@ -19,7 +19,7 @@ ROOT = "../.." #sys.argv[1]
 XY_FILE = f"magnet_dataset_x_positions_{id}.csv" # sys.argv[2]
 PHENOTYPE_COL = "phenotype" #"gutted.weight.kg" #sys.argv[3]
 OUTPUT_ID = f"{id}" # sys.argv[4]
-SUBFOLDER = "magnets_20k_features_300_samples"#"transcriptome_with_random" #sys.argv[5]
+SUBFOLDER = "magnets_20k_features_300_samples_v18may_v2"#"transcriptome_with_random" #sys.argv[5]
 
 NUM_ITERATIONS = 10000 # 10000
 NUM_HOLDOUT_SAMPLES = 50
