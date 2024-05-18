@@ -2,6 +2,8 @@
 
 This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 
+![Alt Text](figures/fp_magnets.gif)
+
 ## Getting started
 
 Add the all_chromosomes.csv to the data directory

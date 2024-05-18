@@ -11,7 +11,7 @@ start_time = time.time()
 output_id = sys.argv[1]
 num_samples = sys.argv[2]
 
-output_folder = f"magnets_20k_features_{num_samples}_samples"
+output_folder = f"magnets_20k_features_{num_samples}_samples_0_majormajor"
 
 number_causal_genes = 5
 number_total_genes = 20000
@@ -55,7 +55,7 @@ coll_exp = magpy.Collection(magnets_list, override_parent=True)
 
 
 
-polarisation_levels = [0.5,1,2]
+polarisation_levels = [0.,1,2]
 polarisation_probabilities = [0.6487, 0.3115, 0.0397] # taken from experimental data
 
 NUM_SAMPLES = int(num_samples)
