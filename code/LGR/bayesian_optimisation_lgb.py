@@ -15,8 +15,12 @@ PHENOTYPE = "gutted.weight.kg"
 
 best_features = pd.read_csv(f"../../data/{SUBFOLDER}/best_features_1.csv", index_col=0)
 list_best_features = list(best_features["features"].values)
+list_best_features = [s.replace(':', '_') for s in list_best_features] # Causes problem with lgb
 
 XY_dataset = pd.read_csv(f"../../data/{SUBFOLDER}/transcriptome_XY.csv", index_col=0)
+XY_dataset_cols = XY_dataset.columns
+XY_dataset_cols = [s.replace(':', '_') for s in XY_dataset_cols]
+XY_dataset.columns = XY_dataset_cols
 
 # One iteration
 # 50 times
@@ -46,24 +50,28 @@ def regression_run(learning_rate, n_estimators, max_depth, min_child_samples, su
     """
     scores = []
     for i in range(20):
-        chosen_features = random.sample(list_best_features, 10)
-        y = XY_dataset[PHENOTYPE]
-        X = XY_dataset.drop(PHENOTYPE, axis=1)
-        X = X[chosen_features]
-        #print(X.shape)
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
-        model = lightgbm.LGBMRegressor(learning_rate=learning_rate, 
-                                       n_estimators=int(n_estimators),
-                                       max_depth=int(max_depth),
-                                       min_child_samples=int(min_child_samples),
-                                       subsample=subsample,
-                                       reg_alpha=reg_alpha, 
-                                       reg_lambda=reg_lambda,
-                                       verbose=-1)
-        model.fit(X_train, y_train)
-        y_pred = model.predict(X_test)
-        mae = mean_absolute_error(y_test, y_pred)
-        scores.append(mae)
+        # try:
+            chosen_features = random.sample(list_best_features, 10)
+            y = XY_dataset[PHENOTYPE]
+            X = XY_dataset.drop(PHENOTYPE, axis=1)
+            X = X[chosen_features]
+            #print(X.shape)
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.33)
+            model = lightgbm.LGBMRegressor(learning_rate=learning_rate, 
+                                        n_estimators=int(n_estimators),
+                                        max_depth=int(max_depth),
+                                        min_child_samples=int(min_child_samples),
+                                        subsample=subsample,
+                                        reg_alpha=reg_alpha, 
+                                        reg_lambda=reg_lambda,
+                                        verbose=-1)
+            model.fit(X_train, y_train)
+            y_pred = model.predict(X_test)
+            mae = mean_absolute_error(y_test, y_pred)
+            scores.append(mae)
+        # except:
+        #     print(chosen_features)
+        #     pass # Some features have names with symbols that interfere
     return -np.mean(scores)
 
 optimizer = BayesianOptimization(
@@ -73,19 +81,21 @@ optimizer = BayesianOptimization(
     random_state=1,
 )
 
-optimizer.maximize(
-    init_points=2,
-    n_iter=3,
-)
+# optimizer.maximize(
+#     init_points=2,
+#     n_iter=3,
+# )
 
 utility = UtilityFunction(kind="ucb", kappa=2.5, xi=0.0)
 next_point_to_probe = optimizer.suggest(utility)
 target = regression_run(**next_point_to_probe)
 
 elapsed_time = 0
-while elapsed_time < 10:
-    start_time = time.time()
-
+start_time = time.time()
+targets_list = []
+points_list = []
+while elapsed_time < 0.5:
+    
     next_point = optimizer.suggest(utility)
     target = regression_run(**next_point)
     optimizer.register(params=next_point, target=target)
@@ -93,5 +103,13 @@ while elapsed_time < 10:
     end_time = time.time()
     elapsed_time = (end_time - start_time)/60 # minutes
 
+    targets_list.append(target)
+    points_list.append(next_point)
+
     print(target, next_point)
 print(optimizer.max)
+
+output = pd.DataFrame()
+output["target"] = targets_list
+output["points"] = points_list
+output.to_csv("output.csv")
