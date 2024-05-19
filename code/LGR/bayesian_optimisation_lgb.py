@@ -94,7 +94,7 @@ elapsed_time = 0
 start_time = time.time()
 targets_list = []
 points_list = []
-while elapsed_time < 0.5:
+while elapsed_time < 180:
     
     next_point = optimizer.suggest(utility)
     target = regression_run(**next_point)
