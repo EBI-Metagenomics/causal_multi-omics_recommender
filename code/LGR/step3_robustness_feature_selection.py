@@ -11,6 +11,9 @@ import time
 start_time = time.time()
 
 """
+
+Example usage: python step3_robustness_feature_selection.py ../.. transcriptome_XY.csv gutted.weight.kg 1 salmon_data 0.01 0.2
+
 This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 """
 
