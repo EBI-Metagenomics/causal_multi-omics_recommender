@@ -10,9 +10,9 @@ start_time = time.time()
 This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 """
 
-ROOT = "../.." #cd ..ys.argv[1]
-OUTPUT_ID = sys.argv[1]
-SUBFOLDER = "magnets_20k_features_300_samples_v18may_v2"#"transcriptome_with_random" #sys.argv[5]
+ROOT = sys.argv[1]
+OUTPUT_ID = sys.argv[2]
+SUBFOLDER = sys.argv[3] #"magnets_20k_features_300_samples_v18may_v2"#"transcriptome_with_random" #sys.argv[5]
 
 df = pd.read_csv(ROOT + os.sep + f"data/{SUBFOLDER}/result_unsorted_{OUTPUT_ID}.csv", index_col=0)
 

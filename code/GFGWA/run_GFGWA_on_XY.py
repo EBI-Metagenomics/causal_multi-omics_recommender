@@ -5,7 +5,7 @@ import os
 from multiprocessing import Pool
 
 """
-
+ Example usage: python run_GFGWA_on_XY.py ../.. magnet_dataset_polarisation_1.csv phenotype 1 magnets_20k_features_300_samples
 """
 
 ROOT = sys.argv[1]

@@ -9,12 +9,19 @@ import sys
 import time
 start_time = time.time()
 
+"""
+ Example usage: python step1_select_best_alpha_for_lasso.py ../.. transcriptome_XY.csv gutted.weight.kg 1 salmon_data 0.01 0.2
+
+"""
+
 id = sys.argv[1]
-ROOT = "../.." #sys.argv[1]
-XY_FILE = f"magnet_dataset_x_positions_{id}.csv" # sys.argv[2]
-PHENOTYPE_COL = "phenotype" #"gutted.weight.kg" #sys.argv[3]
-OUTPUT_ID = f"{id}" # sys.argv[4]
-SUBFOLDER = "magnets_20k_features_300_samples_v18may_v2"#"#"transcriptome_with_random" #sys.argv[5]
+ROOT = sys.argv[1] #"../.." #
+XY_FILE = sys.argv[2]#f"magnet_dataset_x_positions_{id}.csv" # 
+PHENOTYPE_COL = sys.argv[3]#"phenotype" #"gutted.weight.kg" #sys.argv[3]
+OUTPUT_ID = sys.argv[4]#f"{id}" # sys.argv[4]
+SUBFOLDER = sys.argv[5]#"magnets_20k_features_300_samples_v18may_v2"#"#"transcriptome_with_random" #sys.argv[5]
+ALPHA_LOW = sys.argv[6]#0.01
+ALPHA_HIGH = sys.argv[7]#0.02
 
 NUM_ITERATIONS = 50
 

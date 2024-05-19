@@ -15,11 +15,12 @@ This project received funding from the European Union’s Horizon 2020 research 
 """
 
 id = sys.argv[1]
-ROOT = "../.." #sys.argv[1]
-XY_FILE = f"magnet_dataset_x_positions_{id}.csv" # sys.argv[2]
-PHENOTYPE_COL = "phenotype" #"gutted.weight.kg" #sys.argv[3]
-OUTPUT_ID = f"{id}" # sys.argv[4]
-SUBFOLDER = "magnets_20k_features_300_samples_v18may_v2"#"transcriptome_with_random" #sys.argv[5]
+ROOT = sys.argv[1] #"../.." #
+XY_FILE = sys.argv[2]#f"magnet_dataset_x_positions_{id}.csv" # 
+PHENOTYPE_COL = sys.argv[3]#"phenotype" #"gutted.weight.kg" #sys.argv[3]
+OUTPUT_ID = sys.argv[4]#f"{id}" # sys.argv[4]
+SUBFOLDER = sys.argv[5]#"magnets_20k_features_300_samples_v18may_v2"#"#"transcriptome_with_random" #sys.argv[5]
+
 
 NUM_ITERATIONS = 10000 # 10000
 NUM_HOLDOUT_SAMPLES = 50
