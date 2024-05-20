@@ -11,7 +11,7 @@ start_time = time.time()
 output_id = sys.argv[1]
 num_samples = sys.argv[2]
 
-output_folder = f"magnets_20k_features_{num_samples}_samples_v18may_v2"
+output_folder = f"magnets_20k_features_{num_samples}_samples_low_polarization_{output_id}"
 
 number_causal_genes = 5
 number_total_genes = 20000

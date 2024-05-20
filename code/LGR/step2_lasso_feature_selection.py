@@ -10,7 +10,7 @@ start_time = time.time()
 
 """
 
-Example usage: 
+Example usage: python step3_robustness_feature_selection.py ../.. transcriptome_XY.csv gutted.weight.kg 1 salmon_data
 
 This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 
