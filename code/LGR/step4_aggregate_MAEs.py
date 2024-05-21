@@ -17,7 +17,7 @@ ROOT = sys.argv[1]
 OUTPUT_ID = sys.argv[2]
 SUBFOLDER = sys.argv[3] #"magnets_20k_features_300_samples_v18may_v2"#"transcriptome_with_random" #sys.argv[5]
 
-df = pd.read_csv(ROOT + os.sep + f"data/{SUBFOLDER}/result_unsorted_{OUTPUT_ID}.csv", index_col=0)
+df = pd.read_csv(ROOT + os.sep + f"data/{SUBFOLDER}/result_unsorted_{OUTPUT_ID}_lgb.csv", index_col=0)
 
 def extract_list(input_string):
     extracted_strings = re.findall(r"'(.*?)'", input_string)
@@ -25,6 +25,9 @@ def extract_list(input_string):
 
 all_genes = pd.read_csv(ROOT + os.sep + f"data/{SUBFOLDER}/best_features_{OUTPUT_ID}.csv", index_col=0)
 all_genes = list(all_genes["features"].values)
+
+for i in range(20):
+    all_genes.append(f"Random_{i}")
 
 ave_mae_list = []
 covered_genes = []
@@ -49,7 +52,7 @@ for gene in all_genes:
 result_df = pd.DataFrame()
 result_df["Gene"] = covered_genes
 result_df["ave_MAE"] = ave_mae_list
-result_df.to_csv(ROOT + os.sep + f"data/{SUBFOLDER}/results_ave_mae_{OUTPUT_ID}.csv")
+result_df.to_csv(ROOT + os.sep + f"data/{SUBFOLDER}/results_ave_mae_{OUTPUT_ID}_lgb.csv")
 
 end_time = time.time()
 elapsed_time = np.round((end_time - start_time)/60, 2)

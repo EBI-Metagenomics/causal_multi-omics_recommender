@@ -17,7 +17,6 @@ Example usage: python step3_robustness_feature_selection.py ../.. transcriptome_
 This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 """
 
-id = sys.argv[1]
 ROOT = sys.argv[1] #"../.." #
 XY_FILE = sys.argv[2]#f"magnet_dataset_x_positions_{id}.csv" # 
 PHENOTYPE_COL = sys.argv[3]#"phenotype" #"gutted.weight.kg" #sys.argv[3]

@@ -29,7 +29,7 @@ XY = pd.read_csv( ROOT + os.sep + "data" + os.sep + SUBFOLDER + os.sep + XY_FILE
 y = XY[PHENOTYPE_COL]
 X = XY.drop(PHENOTYPE_COL, axis=1)
 
-alphas = np.linspace(0.01, 0.2, num=100)
+alphas = np.linspace(float(ALPHA_LOW), float(ALPHA_HIGH), num=100)
 
 rsquared_list = []
 mae_list = []

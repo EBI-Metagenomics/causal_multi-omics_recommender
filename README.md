@@ -10,12 +10,13 @@ Add the all_chromosomes.csv to the data directory
 
 # Install dependencies by executing the following in the terminal commands:
 
-    conda create -n cmo
-    conda activate cmo
+    conda create -n cmor
+    conda activate cmor
     conda install python
     conda install pandas
     conda install scikit-learn
     conda install matplotlib
+    pip install magpylib
 
 # Create the data directory if this does not exist already
 
