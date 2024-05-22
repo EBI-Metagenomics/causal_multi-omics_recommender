@@ -10,7 +10,6 @@ start_time = time.time()
 
 Example usage: python step4_aggregate_MAEs.py ../.. 1 salmon_data
 
-This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
 """
 
 ROOT = sys.argv[1]

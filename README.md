@@ -1,6 +1,4 @@
-# causal_multi_omics
-
-This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
+# Causal Multi-Omics Recommender
 
 ![Alt Text](figures/fp_magnets.gif)
 
