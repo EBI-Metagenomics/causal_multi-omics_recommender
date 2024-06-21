@@ -1,0 +1,9 @@
+name: cmor
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.11
+  - conda-forge::pandas=2.2.2
+  - conda-forge::scikit-learn=1.5.0
+  - conda-forge::matplotlib=3.8.4

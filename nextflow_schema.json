@@ -1,0 +1,64 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/polavieja_lab/causal_multi-omics_recommender/master/nextflow_schema.json",
+  "title": "polavieja_lab/causal_multi-omics_recommender pipeline parameters",
+  "description": "Causal Multi-Omics Recommender",
+  "type": "object",
+  "defs": {
+    "input_output_options": {
+      "title": "Input/output options",
+      "type": "object",
+      "fa_icon": "fas fa-terminal",
+      "description": "Define where the pipeline should find input data and save output data.",
+      "required": ["features", "phenotype_column", "outdir"],
+      "properties": {
+        "features": {
+          "type": "string",
+          "fa_icon": "fas fa-file-csv",
+          "pattern": "^\\S+\\.csv$",
+          "format": "file-path",
+          "mimetype": "text/csv",
+          "description": "The dataset with the features"
+        },
+        "phenotype_column": {
+          "type": "string",
+          "fa_icon": "fas fa-ad",
+          "description": "The phenotype column name"
+        },
+        "outdir": {
+          "type": "string",
+          "format": "directory-path",
+          "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+          "fa_icon": "fas fa-folder-open",
+          "default": "results"
+        }
+      }
+    },
+    "models_parameters": {
+      "title": "Models parameters",
+      "type": "object",
+      "description": "",
+      "default": "",
+      "properties": {
+        "alpha_high": {
+          "type": "number",
+          "default": 0.02,
+          "fa_icon": "fas fa-sliders-h"
+        },
+        "alpha_low": {
+          "type": "number",
+          "default": 0.01,
+          "fa_icon": "fas fa-sliders-h"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "$ref": "#/defs/input_output_options"
+    },
+    {
+      "$ref": "#/defs/models_parameters"
+    }
+  ]
+}
