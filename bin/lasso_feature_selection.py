@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import argparse
-import ast
+import sys
 import time
 
 import numpy as np
@@ -11,21 +11,24 @@ from sklearn.model_selection import train_test_split
 
 start_time = time.time()
 
+NUM_ITERATIONS = 2  # 50
+
 parser = argparse.ArgumentParser(
     description="Select the best features using Lasso regression"
 )
-parser.add_argument("-a", "alpha_mae", help="Alpha mae lasso regression csv.")
-parser.add_argument("-x", "xy_file", help="XY file")
 parser.add_argument(
-    "-p", "phenotype_col", type=str, help="Name of the phenotype column"
+    "-a", "--alpha-mae", help="Alpha mae lasso regression parquet file."
 )
-parser.add_argument("-o", "output", help="Output csv file")
+parser.add_argument("-x", "--xy-file", help="XY file")
+parser.add_argument(
+    "-p", "--phenotype-col", type=str, help="Name of the phenotype column"
+)
+parser.add_argument("-o", "--output", help="Output csv file")
 args = parser.parse_args()
 
-NUM_ITERATIONS = 50
 
 # Load the alpha-MAE dataframe
-alpha_mae = pd.read_csv(args.alpha_mae)
+alpha_mae = pd.read_parquet(args.alpha_mae)
 
 # Find the best alpha
 error_low = []
@@ -34,7 +37,7 @@ min_mae = np.inf
 best_alpha = None
 best_alpha_stdev = None
 for index, row in alpha_mae.iterrows():
-    cv = ast.literal_eval(row["all_maes"])
+    cv = row["all_maes"]
     error_low.append(np.percentile(cv, 5))
     error_high.append(np.percentile(cv, 95))
     mean_mae = row["mae_list"]
@@ -49,6 +52,12 @@ best_alpha_plus_std = min_mae + best_alpha_stdev
 chosen_alpha_df = alpha_mae[alpha_mae["mae_list"] < best_alpha_plus_std]
 chosen_alpha_df = chosen_alpha_df[chosen_alpha_df["alphas"] > best_alpha]
 chosen_alpha_df.sort_values(by="mae_list", inplace=True)
+
+if chosen_alpha_df.empty:
+    # TODO: improve error message
+    print("The filtered db is empty.", file=sys.stderr)
+    sys.exit(1)
+
 chosen_alpha = chosen_alpha_df["alphas"].iloc[0]
 
 # Load the XY data

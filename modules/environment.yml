@@ -4,6 +4,8 @@ channels:
   - defaults
 dependencies:
   - python=3.11
+  - conda-forge::procps-ng
   - conda-forge::pandas=2.2.2
+  - conda-forge::pyarrow=16.1.0
   - conda-forge::scikit-learn=1.5.0
   - conda-forge::matplotlib=3.8.4

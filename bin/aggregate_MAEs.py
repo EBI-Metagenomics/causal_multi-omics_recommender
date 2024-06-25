@@ -1,23 +1,25 @@
 #!/usr/bin/env python3
 
 import argparse
-import pandas as pd
 import re
-import numpy as np
 import time
+
+import numpy as np
+import pandas as pd
 
 start_time = time.time()
 
 parser = argparse.ArgumentParser(description="Aggregate MAEs")
-parser.add_argument("-r", "results_unsorted_lgb", required=True, help="")
-parser.add_argument("-b", "best_features", required=True, help="The best features csv")
+parser.add_argument("-r", "--results-unsorted-lgb", required=True, help="")
 parser.add_argument(
-    "-o", "output_name", type=str, required=True, help="Output name csv file"
+    "-b", "--best-features", required=True, help="The best features csv"
+)
+parser.add_argument(
+    "-o", "--output", type=str, required=True, help="Output name csv file"
 )
 args = parser.parse_args()
 
 # Load the data
-# f"result_unsorted_{args.output_id}_lgb.csv"
 df = pd.read_csv(args.results_unsorted_lgb, index_col=0)
 
 
@@ -27,7 +29,6 @@ def extract_list(input_string):
 
 
 # Load the best features
-# f"best_features_{args.output_id}.csv"
 all_genes = pd.read_csv(args.best_features, index_col=0)
 all_genes = list(all_genes["features"].values)
 
@@ -58,7 +59,6 @@ for gene in all_genes:
 result_df = pd.DataFrame()
 result_df["Gene"] = covered_genes
 result_df["ave_MAE"] = ave_mae_list
-# "results_ave_mae_{args.output_id}_lgb.csv" #
 result_df.to_csv(args.output)
 
 end_time = time.time()

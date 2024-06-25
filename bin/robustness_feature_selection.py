@@ -13,13 +13,19 @@ from sklearn.model_selection import train_test_split
 start_time = time.time()
 
 parser = argparse.ArgumentParser(description="Robustness feature selection")
-parser.add_argument("-b", "best_features", required=True, help="The best features csv")
-parser.add_argument("-x", "xy_file", required=True, help="XY file")
 parser.add_argument(
-    "-p", "phenotype_col", type=str, required=True, help="Name of the phenotype column"
+    "-b", "--best-features", required=True, help="The best features csv"
+)
+parser.add_argument("-x", "--xy-file", required=True, help="XY file")
+parser.add_argument(
+    "-p",
+    "--phenotype-col",
+    type=str,
+    required=True,
+    help="Name of the phenotype column",
 )
 parser.add_argument(
-    "-o", "output_name", type=str, required=True, help="Output name csv file"
+    "-o", "--output-name", type=str, required=True, help="Output name csv file"
 )
 args = parser.parse_args()
 
@@ -36,8 +42,6 @@ best_training_features = pd.read_csv(
 
 # Load the XY data
 XY = pd.read_csv(args.xy_file, index_col=0)
-y = XY[args.phenotype_col]
-X = XY.drop(args.phenotype_col, axis=1)
 
 # Add random features
 random_strings = [f"Random_{i}" for i in range(20)]
@@ -46,6 +50,9 @@ for random_string in random_strings:
     shuffled_values = XY[random_column].sample(frac=1).values
     XY[random_string] = shuffled_values
     best_training_features.append(random_string)
+
+y = XY[args.phenotype_col]
+X = XY.drop(args.phenotype_col, axis=1)
 
 mae_list = []
 feature_combination_list = []
@@ -85,11 +92,11 @@ result_df = pd.DataFrame()
 result_df["MAE"] = mae_list
 result_df["Features"] = feature_combination_list
 result_df["Update"] = update_here
-result_df.to_csv(f"{args.output}_unsorted.csv")
+result_df.to_csv(f"{args.output_name}_unsorted.csv")
 
 result_df.sort_values(by="MAE", inplace=True, ascending=False)
 result_df.reset_index(drop=True, inplace=True)
-result_df.to_csv(f"{args.output}_sorted.csv")
+result_df.to_csv(f"{args.output_name}_sorted.csv")
 
 end_time = time.time()
 elapsed_time = np.round((end_time - start_time) / 60, 2)

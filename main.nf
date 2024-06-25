@@ -33,6 +33,14 @@ include { CAUSAL_MULTIOMICS_RECOMMENDER } from './workflows/causal_multiomics_re
 //
 // WORKFLOW: Run main ebi-metagenomics/mettannotator analysis pipeline
 //
-workflow POLAVIEJA_LAB_CAUSAL_MULTIOMICS_RECOMMENDER {
+workflow POLAVIEJA_LAB {
     CAUSAL_MULTIOMICS_RECOMMENDER ()
+}
+
+//
+// WORKFLOW: Execute a single named workflow for the pipeline
+// See: https://github.com/nf-core/rnaseq/issues/619
+//
+workflow {
+    POLAVIEJA_LAB ()
 }
