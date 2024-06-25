@@ -1,7 +1,7 @@
 process LASSO_FEATURE_SELECTION {
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/microbiome-informatics/causal_multiomics_recommender:1.1dev"
+    container "quay.io/microbiome-informatics/causal_multiomics_recommender:1.2dev"
 
     input:
     path(alpha_mae_parquet)

@@ -1,7 +1,7 @@
 process AGGREGATE_MAES {
 
     conda "${moduleDir}/environment.yml"
-    container "quay.io/microbiome-informatics/causal_multiomics_recommender:1.1dev"
+    container "quay.io/microbiome-informatics/causal_multiomics_recommender:1.2dev"
 
     input:
     path(results_unsorted_lgb_csv)
