@@ -38,3 +38,24 @@ Models parameters
 ## Pipeline output
 
 The outputs of the pipeline will be stored in the specified `outdir` directory.
+
+### Results structure
+
+```bash
+results/
+├── aggregate_maes
+│   └── results_ave_mae_test_lgb.csv
+├── lasso_feature_selection
+│   └── best_features_test.csv
+├── pipeline_info
+│   ├── execution_report.html
+│   ├── execution_timeline.html
+│   ├── execution_trace.txt
+│   └── pipeline_dag.html
+├── robustness_feature_selection
+│   ├── test_sorted.csv
+│   └── test_unsorted.csv
+├── select_best_alpha_for_lasso
+│   └── test_alpha_mae_df.parquet
+└── versions.yml
+```
