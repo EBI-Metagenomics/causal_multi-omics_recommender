@@ -2,14 +2,6 @@
 
 ![Alt Text](figures/fp_magnets.gif)
 
-## Introduction
-
-TODO
-
-## Pipeline summary
-
-TODO
-
 ## Usage
 
 ```bash
