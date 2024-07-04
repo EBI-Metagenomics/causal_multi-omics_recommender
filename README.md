@@ -1,5 +1,7 @@
 # Causal Multi-Omics Recommender pipeline
 
+This project received funding from the European Union’s Horizon 2020 research and innovation programme [952914] (FindingPheno).
+
 ![Alt Text](figures/fp_magnets.gif)
 
 ## Usage
